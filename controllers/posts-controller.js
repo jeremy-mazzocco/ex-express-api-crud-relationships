@@ -1,105 +1,49 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const NotFound = require("../exceptions/NotFound");
+const ValidationError = require("../exceptions/ValidationError");
 
 
-async function search(req, res) {
-    const { keyword } = req.query;
 
-    const data = await prisma.post.findMany({
-        where: {
-            published: true,
-            OR: [
-                {
-                    slug: {
-                        contains: keyword || "",
-                    },
-                },
-                {
-                    content: {
-                        contains: keyword || "",
-                    },
-                },
-            ],
-        },
-    });
+async function store(req, res, next) {
 
-    if (!data) {
-        throw new Error("Not found");
+    const validation = validationResult(req);
+
+    if (!validation.isEmpty()) {
+
+        return next(
+            new ValidationError("Check your data", validation.array())
+        );
     }
 
-    return res.json(data);
-}
-
-async function show(req, res) {
-    const { slug } = req.params;
-
-    const data = await prisma.post.findUnique({
-        where: {
-            slug: slug,
-        },
-    });
-
-    if (!data) {
-        throw new Error("Not found");
-    }
-
-    return res.json(data);
-}
-
-async function store(req, res) {
-    try {
-        const inputData = req.body;
-
-        const newPost = await prisma.post.create({
-            data: {
-                slug: inputData.slug,
-                image: inputData.image,
-                content: inputData.content,
-                published: inputData.published,
-                createdAt: inputData.createdAt,
-                updatedAt: inputData.updatedAt,
-            },
-        });
-
-        return res.json(newPost);
-    } catch (error) {
-        return res.status(500).json({ error: "Errore durante la creazione del post" });
-    }
-}
-
-async function update(req, res) {
-    const { slug } = req.params;
     const inputData = req.body;
 
-    const findPost = await prisma.post.update({
-        where: {
-            slug: slug,
-        }
-    });
-
-    if (!findPost) {
-        throw new Error('Not found');
-    }
-
-    const updatedPost = await prisma.pizza.update({
-        data: inputData,
-        where: {
-            slug: slug,
+    const newPost = await prisma.post.create({
+        data: {
+            slug: inputData.slug,
+            image: inputData.image,
+            content: inputData.content,
+            published: inputData.published,
+            category: {
+                connect: { id: inputData.categoryID },
+            },
+            tags: {
+                connect: inputData.tags.map((idTag) => ({
+                    id: idTag,
+                })),
+            },
         },
-    })
-
-    return res.json(updatedPost)
-}
-
-async function destroy(req, res) {
-    await prisma.post.delete({
-        where: {
-            slug: slug,
-        }
+        include: {
+            category: true,
+            tags: true,
+        },
     });
 
-    return res.json({ message: "Post deleted" });
+    return res.json(newPost);
 }
+
+
+
 
 
 module.exports = {

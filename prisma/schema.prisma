@@ -11,25 +11,25 @@ datasource db {
 }
 
 model Post {
-  id          Int      @id @default(autoincrement())
-  slug        String   @unique @db.VarChar(100)
-  image       String?  @db.Text
-  content     String   @db.Text
-  categoryID  Int
-  category  Category @relation(fields: [categoryID], references: [id])
-  tags      Tag[]
-  published   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  slug       String   @unique @db.VarChar(100)
+  image      String?  @db.Text
+  content    String   @db.Text
+  categoryID Int
+  category   Category @relation(fields: [categoryID], references: [id])
+  tags       Tag[]
+  published  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 // relazione 1-N
 model Category {
-  id          Int    @id @default(autoincrement())
-  name        String @db.Text
+  id        Int      @id @default(autoincrement())
+  name      String   @db.Text
   post      Post[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // relazione N-N
