@@ -47,9 +47,5 @@ async function store(req, res, next) {
 
 
 module.exports = {
-    search,
-    show,
     store,
-    update,
-    destroy
 };

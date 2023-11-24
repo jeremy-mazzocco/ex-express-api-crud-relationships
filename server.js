@@ -1,7 +1,9 @@
 const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
-const pizzasRouter = require("./routers/posts-router");
+const postsRouter = require("./routers/posts-router");
+const tagsRouter = require("./routers/tags-router");
+const categoriesRouter = require("./routers/categories-router");
 dotenv.config();
 
 
@@ -13,8 +15,9 @@ dotenv.config();
 app.use(express.json());
 
 
-app.use("/posts", pizzasRouter);
-
+app.use("/posts", postsRouter);
+app.use("/tags", tagsRouter);
+app.use("/categories", categoriesRouter);
 
 app.listen(process.env.PORT || 3000, () => {
     console.log(`Server running on http://localhost:${process.env.PORT}`);
