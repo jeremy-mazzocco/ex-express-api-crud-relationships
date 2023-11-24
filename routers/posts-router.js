@@ -16,9 +16,7 @@ router.post(
 );
 
 
-
-
-
+router.get("/:id", postsController.show);
 
 
 

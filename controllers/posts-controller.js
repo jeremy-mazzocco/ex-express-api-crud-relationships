@@ -44,8 +44,31 @@ async function store(req, res, next) {
 
 
 
+async function show(req, res, next) {
+
+    const { id } = req.params;
+
+    const data = await prisma.post.findUnique({
+        where: {
+            id: parseInt(id),
+        },
+        include: {
+            tags: true,
+            categories: true,
+        },
+    });
+
+    if (!data) {
+
+        return next(new NotFound("Post not found."));
+    }
+
+    return res.json(data);
+}
+
 
 
 module.exports = {
     store,
+    show
 };
