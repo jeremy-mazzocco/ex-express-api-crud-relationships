@@ -2,7 +2,6 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 
-
 async function search(req, res) {
     const { keyword } = req.query;
 
@@ -31,8 +30,6 @@ async function search(req, res) {
     return res.json(data);
 }
 
-
-
 async function show(req, res) {
     const { slug } = req.params;
 
@@ -48,8 +45,6 @@ async function show(req, res) {
 
     return res.json(data);
 }
-
-
 
 async function store(req, res) {
     try {
@@ -71,8 +66,6 @@ async function store(req, res) {
         return res.status(500).json({ error: "Errore durante la creazione del post" });
     }
 }
-
-
 
 async function update(req, res) {
     const { slug } = req.params;
@@ -97,8 +90,6 @@ async function update(req, res) {
 
     return res.json(updatedPost)
 }
-
-
 
 async function destroy(req, res) {
     await prisma.post.delete({

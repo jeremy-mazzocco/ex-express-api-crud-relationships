@@ -11,12 +11,36 @@ datasource db {
 }
 
 model Post {
-  id          Int      @id @default(autoincrement())
-  slug        String   @unique @db.VarChar(100)
-  image       String?  @db.Text
-  content     String   @db.Text
-  published   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         Int          @id @default(autoincrement())
+  slug       String       @unique @db.VarChar(100)
+  image      String?      @db.Text
+  content    String       @db.Text
+  category   Category[]
+  tags       Tag[]
+  published  Boolean      @default(false)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
 
+
+// relazione 1-N
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.Text
+  postID    Int
+  post      Post     @relation(fields: [postID], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+// relazione N-N
+model Tag {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(100)
+  fake      Boolean  @default(false)
+  liked     Boolean  @default(false)
+  post      Post[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
